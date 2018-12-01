@@ -1,0 +1,27 @@
+{
+  "name": "serverless-gh-hook-circle-job",
+  "version": "1.0.0",
+  "description": "- GitHub PullRequest -(Web Hook)-> API Gateway -> Lambda -> CircleCI の経路でビルドをKickする",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/yasuhiroki/serverless-gh-hook-circle-job.git"
+  },
+  "author": "yasuhiroki",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yasuhiroki/serverless-gh-hook-circle-job/issues"
+  },
+  "homepage": "https://github.com/yasuhiroki/serverless-gh-hook-circle-job#readme",
+  "dependencies": {
+    "serverless": "^1.34.1"
+  },
+  "devDependencies": {
+    "eslint": "^5.9.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.14.0"
+  }
+}
