@@ -1,0 +1,24 @@
+service: gh-hook-circleci-job
+
+frameworkVersion: "~>1.25.0"
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  stage: dev
+  region: ap-northeast-1
+
+functions:
+  lint:
+    handler: index.handler
+    description: hook circleci job by web hook of github pull-request
+    events:
+      - http:
+          path: circleci
+          method: post
+    environment:
+      CIRCLECI_TOKEN:
+      TARGET_JOB: eslint
+      TARGET_REPO: yasuhiroki/serverless-gh-hook-circleci-job
+      IGNORE_BRANCHES: master,staging,develop
+

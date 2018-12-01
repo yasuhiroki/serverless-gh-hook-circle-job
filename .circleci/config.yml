@@ -1,0 +1,58 @@
+executors:
+  node:
+    docker:
+      - image: circleci/node
+    working_directory: ~/app
+    environment:
+      - REVIEWDOG_PATH: ./bin/reviewdog
+      - REVIEWDOG_URL: https://github.com/haya14busa/reviewdog/releases/download/0.9.10/reviewdog_linux_amd64
+
+commands:
+  reviewdog_setup:
+    steps:
+      - restore_cache:
+          key: go-module-{{ .Environment.CIRCLECI_CACHE }}-{{ .Branch }}
+      - run:
+          name: download reviewdog
+          command: |
+            mkdir -p bin
+            wget -nc ${REVIEWDOG_URL} -O ${REVIEWDOG_PATH} || true
+            chmod 755 ${REVIEWDOG_PATH}
+      - save_cache:
+          key: go-module-{{ .Environment.CIRCLECI_CACHE }}-{{ .Branch }}
+          paths:
+            - ./bin
+  serverless_setup:
+    steps:
+      - restore_cache:
+          key: node_modules-{{ .Environment.CIRCLECI_CACHE }}-{{ .Branch }}
+      - run:
+          name: Install serverless
+          command: |
+            npm install
+      - save_cache:
+          key: node_modules-{{ .Environment.CIRCLECI_CACHE }}-{{ .Branch }}
+          paths:
+            - node_modules
+  eslint:
+    steps:
+      - checkout
+      - reviewdog_setup
+      - serverless_setup
+      - run:
+          name: Run eslint and reviewdog
+          command: |
+            ./node_modules/.bin/eslint ./*.js | tee eslint-res.txt || true
+            cat eslint-res.txt | ${REVIEWDOG_PATH} -f=eslint -reporter=github-pr-review
+
+version: 2.1
+jobs:
+  eslint:
+    executor: node
+    steps:
+      - eslint
+
+workflows:
+  something:
+    jobs:
+      - eslint
