@@ -45,7 +45,8 @@ function requestCircleCIBuild(repo, branch, callback) {
 }
 
 function processEvent(event, callback) {
-  const params = event;
+  console.log(event);
+  const params = JSON.parse(event.body);
   console.log(params);
 
   if (!['opened', 'reopened'].includes(params.action)) {
