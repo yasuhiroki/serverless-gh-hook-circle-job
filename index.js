@@ -23,7 +23,17 @@ function requestCircleCIBuild(repo, branch, callback) {
       'Content-Length': postDataStr.length,
     },
   };
-  const req = https.request(options);
+  const req = https.request(options, (res) => {
+    console.log(res.statusCode);
+
+    let resBody = "";
+    res.on('data', (chunk) => {
+      resBody += chunk;
+    });
+    res.on('end', () => {
+      console.log(resBody);
+    });
+  });
 
   req.on('error', (e) => {
     console.error(e);
@@ -66,6 +76,5 @@ exports.handler = (event, context, callback) => {
     },
   });
 
-  console.log(event);
   processEvent(event, done);
 };
